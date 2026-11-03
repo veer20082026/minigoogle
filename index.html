@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Google 1998 — TACTICAL EDITION</title>
+  <style>
+    /* ── Fonts & reset ── */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Body: dark military background with camo hex pattern ── */
+    body {
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      background-color: #0a0d06;
+      background-image:
+        /* subtle hexagonal camo overlay */
+        repeating-linear-gradient(60deg,
+          rgba(30, 45, 10, 0.18) 0px, rgba(30, 45, 10, 0.18) 1px,
+          transparent 1px, transparent 30px),
+        repeating-linear-gradient(-60deg,
+          rgba(20, 35, 8, 0.15) 0px, rgba(20, 35, 8, 0.15) 1px,
+          transparent 1px, transparent 30px),
+        repeating-linear-gradient(0deg,
+          rgba(10, 20, 4, 0.12) 0px, rgba(10, 20, 4, 0.12) 1px,
+          transparent 1px, transparent 30px);
+      min-height: 100vh;
+      color: #b8d488;
+    }
+
+    /* ── Scanline flicker effect on header ── */
+    @keyframes scanline {
+      0% {
+        background-position: 0 0;
+      }
+
+      100% {
+        background-position: 0 100px;
+      }
+    }
+
+    @keyframes flicker {
+
+      0%,
+      97%,
+      100% {
+        opacity: 1;
+      }
+
+      98% {
+        opacity: 0.85;
+      }
+
+      99% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes blink-cursor {
+
+      0%,
+      49% {
+        opacity: 1;
+      }
+
+      50%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes glow-pulse {
+
+      0%,
+      100% {
+        text-shadow: 0 0 8px #7ec832, 0 0 20px #5a9e18;
+      }
+
+      50% {
+        text-shadow: 0 0 18px #a0e840, 0 0 40px #7ec832, 0 0 60px #4a8010;
+      }
+    }
+
+    @keyframes border-pulse {
+
+      0%,
+      100% {
+        border-color: #4a7c10;
+        box-shadow: 0 0 8px #4a7c1060;
+      }
+
+      50% {
+        border-color: #8ecf30;
+        box-shadow: 0 0 18px #8ecf3080;
+      }
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      background:
+        linear-gradient(180deg, #0d1a04 0%, #121f06 60%, #0a1303 100%);
+      border-bottom: 2px solid #4a7c10;
+      box-shadow: 0 4px 30px rgba(100, 200, 20, 0.15), inset 0 -1px 0 #7ec83240;
+      padding: 28px 20px 22px;
+      text-align: center;
+      overflow: hidden;
+      animation: flicker 8s infinite;
+    }
+
+    /* scanline overlay */
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg,
+          transparent,
+          transparent 3px,
+          rgba(0, 0, 0, 0.08) 3px,
+          rgba(0, 0, 0, 0.08) 4px);
+      pointer-events: none;
+      animation: scanline 4s linear infinite;
+    }
+
+    /* top corner brackets */
+    header::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      border-top: 1px solid #6ab02040;
+      border-bottom: 1px solid #6ab02040;
+      pointer-events: none;
+    }
+
+    /* ── LOGO ── */
+    .logo-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    .logo-tag {
+      font-size: 0.65rem;
+      letter-spacing: 6px;
+      color: #6ab020;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      opacity: 0.8;
+    }
+
+    .logo {
+      font-family: 'Orbitron', 'Arial Black', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      line-height: 1;
+      animation: glow-pulse 3s ease-in-out infinite;
+    }
+
+    /* Each letter gets a tactical green / orange / red CoD palette */
+    .logo span:nth-child(1) {
+      color: #8ecf30;
+    }
+
+    /* M */
+    .logo span:nth-child(2) {
+      color: #b8d488;
+    }
+
+    /* i */
+    .logo span:nth-child(3) {
+      color: #6ab020;
+    }
+
+    /* n */
+    .logo span:nth-child(4) {
+      color: #8ecf30;
+    }
+
+    /* i */
+    .logo span:nth-child(5) {
+      color: #b8d488;
+    }
+
+    /* space */
+    .logo span:nth-child(6) {
+      color: #ff6b00;
+    }
+
+    /* G  — orange flare */
+    .logo span:nth-child(7) {
+      color: #8ecf30;
+    }
+
+    /* o */
+    .logo span:nth-child(8) {
+      color: #ff6b00;
+    }
+
+    /* o */
+    .logo span:nth-child(9) {
+      color: #8ecf30;
+    }
+
+    /* g */
+    .logo span:nth-child(10) {
+      color: #e8c840;
+    }
+
+    /* l  — brass/gold */
+    .logo span:nth-child(11) {
+      color: #8ecf30;
+    }
+
+    /* e */
+
+    .logo-subtitle {
+      font-size: 0.72rem;
+      color: #6ab020;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      margin-top: 8px;
+      margin-bottom: 22px;
+      opacity: 0.9;
+    }
+
+    /* blinking cursor after subtitle */
+    .logo-subtitle::after {
+      content: '|';
+      animation: blink-cursor 1s step-end infinite;
+      margin-left: 4px;
+    }
+
+    /* ── SEARCH BOX ── */
+    .search-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    #searchInput {
+      width: min(480px, 78vw);
+      padding: 12px 20px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      background: #0d1a04;
+      color: #b8d488;
+      border: 2px solid #4a7c10;
+      border-radius: 3px;
+      outline: none;
+      box-shadow: inset 0 0 10px rgba(100, 200, 20, 0.07), 0 0 8px #4a7c1060;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      animation: border-pulse 3s ease-in-out infinite;
+    }
+
+    #searchInput::placeholder {
+      color: #4a7c10;
+      opacity: 1;
+    }
+
+    #searchInput:focus {
+      border-color: #8ecf30;
+      box-shadow: inset 0 0 12px rgba(142, 207, 48, 0.12), 0 0 16px #8ecf3070;
+      animation: none;
+    }
+
+    #searchBtn {
+      padding: 12px 22px;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: #ff6b00;
+      color: #0a0d06;
+      border: 2px solid #cc5500;
+      border-radius: 3px;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 0 12px #ff6b0060;
+      transition: all 0.2s;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    }
+
+    #searchBtn:hover {
+      background: #ff8c30;
+      box-shadow: 0 0 20px #ff6b00aa;
+      transform: scale(1.04);
+    }
+
+    /* ── EXAMPLE INTEL BUTTONS ── */
+    .examples-label {
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      color: #4a7c10;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .examples {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ex-btn {
+      padding: 6px 16px;
+      background: transparent;
+      color: #8ecf30;
+      border: 1px solid #4a7c10;
+      border-radius: 2px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    }
+
+    .ex-btn:hover {
+      background: #4a7c1040;
+      border-color: #8ecf30;
+      color: #c4e870;
+      box-shadow: 0 0 10px #8ecf3050;
+    }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 22px 16px;
+    }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      padding: 10px 14px;
+      background: #0d1a0480;
+      border: 1px solid #4a7c1060;
+      border-radius: 3px;
+    }
+
+    #surferBtn {
+      padding: 8px 18px;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: transparent;
+      color: #8ecf30;
+      border: 1px solid #8ecf30;
+      border-radius: 2px;
+      cursor: pointer;
+      text-transform: uppercase;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      transition: all 0.2s;
+    }
+
+    #surferBtn:hover {
+      background: #8ecf3020;
+      box-shadow: 0 0 14px #8ecf3060;
+    }
+
+    .surfer-info {
+      font-size: 0.75rem;
+      color: #6ab020;
+      font-style: normal;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── RESULTS GRID ── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 680px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Column header bar */
+    .col-header {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 10px 14px;
+      text-transform: uppercase;
+      text-align: center;
+      border-radius: 2px 2px 0 0;
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    }
+
+    .col-old .col-header {
+      background: #1a3a08;
+      color: #8ecf30;
+      border-bottom: 2px solid #4a7c10;
+    }
+
+    .col-surfer .col-header {
+      background: #2a1800;
+      color: #ff6b00;
+      border-bottom: 2px solid #cc5500;
+    }
+
+    .cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* ── RESULT CARD ── */
+    .card {
+      background: linear-gradient(135deg, #0d1a0490 0%, #111e0580 100%);
+      border: 1px solid #2a4a08;
+      border-left: 3px solid #4a7c10;
+      border-radius: 2px;
+      padding: 13px 15px;
+      transition: all 0.18s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* corner bracket decoration */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 10px;
+      height: 10px;
+      border-top: 1px solid #6ab02060;
+      border-left: 1px solid #6ab02060;
+    }
+
+    .card:hover {
+      border-color: #6ab020;
+      border-left-color: #8ecf30;
+      box-shadow: 0 0 14px #4a7c1040;
+      transform: translateX(3px);
+    }
+
+    .col-surfer .card {
+      border-left-color: #cc5500;
+      border-color: #3a2000;
+    }
+
+    .col-surfer .card:hover {
+      border-color: #ff6b00;
+      border-left-color: #ff8c30;
+      box-shadow: 0 0 14px #ff6b0030;
+    }
+
+    .card-rank {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: #4a7c10;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .col-surfer .card-rank {
+      color: #cc5500;
+    }
+
+    .card-url {
+      font-size: 0.88rem;
+      color: #8ecf30;
+      word-break: break-all;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    .col-surfer .card-url {
+      color: #ff8c30;
+    }
+
+    .card-text {
+      font-size: 0.84rem;
+      color: #8a9e70;
+      line-height: 1.6;
+      margin-bottom: 9px;
+    }
+
+    /* Highlighted search word — orange muzzle-flash */
+    mark {
+      background: #ff6b00;
+      color: #0a0d06;
+      border-radius: 2px;
+      padding: 0 3px;
+      font-weight: bold;
+      box-shadow: 0 0 6px #ff6b00aa;
+    }
+
+    /* Score badges */
+    .card-score {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 2px;
+      display: inline-block;
+      text-transform: uppercase;
+      clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+    }
+
+    .score-old {
+      background: #1a3a08;
+      color: #8ecf30;
+      border: 1px solid #4a7c10;
+    }
+
+    .score-surfer {
+      background: #2a1800;
+      color: #ff6b00;
+      border: 1px solid #cc5500;
+    }
+
+    .score-links {
+      background: #101a20;
+      color: #60c8e8;
+      border: 1px solid #206880;
+      margin-left: 6px;
+    }
+
+    /* ── NO-RESULTS ── */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 52px 20px;
+      color: #4a7c10;
+      border: 1px dashed #2a4a08;
+      border-radius: 4px;
+    }
+
+    .no-results .emoji {
+      font-size: 3rem;
+      margin-bottom: 14px;
+    }
+
+    .no-results p {
+      font-size: 1rem;
+      color: #6ab020;
+      line-height: 1.8;
+    }
+
+    .no-results strong {
+      color: #ff6b00;
+    }
+
+    /* ── INTRO SCREEN ── */
+    #intro {
+      text-align: center;
+      padding: 56px 20px;
+      color: #4a7c10;
+      border: 1px dashed #1a3a08;
+      border-radius: 4px;
+    }
+
+    #intro .big {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+      filter: sepia(1) hue-rotate(60deg);
+    }
+
+    #intro p {
+      font-size: 0.9rem;
+      color: #6ab020;
+      line-height: 1.9;
+      letter-spacing: 0.5px;
+    }
+
+    #intro strong {
+      color: #8ecf30;
+    }
+
+    /* ── DIVIDER between header sections ── */
+    .hud-divider {
+      width: 60%;
+      max-width: 400px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #4a7c10, transparent);
+      margin: 0 auto 16px;
+    }
+
+    /* ── Scrollbar styling ── */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0a0d06;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2a4a08;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4a7c10;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════
+     HEADER — Tactical HUD-style
+     ══════════════════════════════════════════════ -->
+  <header>
+    <div class="logo-tag">▶ CLASSIFIED INTEL SYSTEM ◀</div>
+
+    <!-- Colourful logo -->
+    <div class="logo">
+      <span>M</span><span>i</span><span>n</span><span>i</span><span>
+      </span><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+    </div>
+    <div class="logo-subtitle">⬡ TACTICAL EDITION · 1998 ⬡</div>
+
+    <div class="hud-divider"></div>
+
+    <!-- Search box -->
+    <div class="search-row">
+      <input id="searchInput" type="text" placeholder="► ENTER SEARCH QUERY…" autocomplete="off" />
+      <button id="searchBtn" onclick="doSearch()">🎯 EXECUTE</button>
+    </div>
+
+    <!-- Intel quick-select buttons -->
+    <div class="examples-label">// QUICK INTEL //</div>
+    <div class="examples">
+      <button class="ex-btn" onclick="quickSearch('pizza')">🍕 PIZZA</button>
+      <button class="ex-btn" onclick="quickSearch('cricket')">🏏 CRICKET</button>
+      <button class="ex-btn" onclick="quickSearch('movie')">🎬 MOVIE</button>
+      <button class="ex-btn" onclick="quickSearch('exam')">📋 EXAM</button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+     MAIN CONTENT
+     ══════════════════════════════════════════════ -->
+  <main>
+    <!-- Toolbar -->
+    <div class="toolbar" id="toolbar" style="display:none;">
+      <button id="surferBtn" onclick="runSurfer(); doSearch();">⟳ REDEPLOY SURFER</button>
+      <span class="surfer-info" id="surferInfo"></span>
+    </div>
+
+    <!-- Results container -->
+    <div id="results">
+      <!-- Shown before the first search -->
+      <div id="intro">
+        <div class="big">🎖️</div>
+        <p>
+          SYSTEM ONLINE. AWAITING ORDERS, SOLDIER.<br>
+          Type your target above and press <strong>EXECUTE</strong>.<br>
+          Or select a quick intel topic.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ══════════════════════════════════════════════════════════════════
+    // ① THE DATA — edit this array to change the web pages
+    //    Each object: page number (1-based), url, text, links_to (array of page numbers)
+    // ══════════════════════════════════════════════════════════════════
+    const PAGES = [
+      { page: 1, url: "pizza-palace.com", text: "The best pizza in town! Our pizza has a crispy crust topped with fresh tomato sauce and melted cheese. Order pizza online and get it delivered hot. Pizza lovers come here every day.", links_to: [2, 5, 9] },
+      { page: 2, url: "italian-kitchen.net", text: "Authentic Italian recipes including pasta, risotto, and of course pizza. Our wood-fired pizza oven makes the perfect pizza every time. Visit us for a great pizza experience.", links_to: [1, 3, 10] },
+      { page: 3, url: "food-blog.org", text: "Food reviews from around the world. We tasted pizza from 50 restaurants. We also tried cricket flour snacks, which are surprisingly tasty. Food is culture, and culture is food.", links_to: [1, 4, 7] },
+      { page: 4, url: "nutrition-guide.com", text: "Healthy eating tips. Did you know pizza can be healthy? Use whole-wheat crust and vegetable toppings. Balance your diet with proteins, carbs, and vitamins. Exam season tip: eat well to study better.", links_to: [3, 5, 11] },
+      { page: 5, url: "delivery-king.com", text: "Fast food delivery app. Order pizza, burgers, and sushi in minutes. We deliver pizza to your door in under 30 minutes. Best pizza delivery service in the city.", links_to: [1, 2, 6] },
+      { page: 6, url: "cricket-world.net", text: "Everything about cricket! Cricket is a bat-and-ball sport played between two teams. The cricket pitch is 22 yards long. Cricket matches can last five days in the Test format. Cricket is huge in India, England, and Australia.", links_to: [7, 8, 12] },
+      { page: 7, url: "sports-daily.com", text: "Your daily sports update. Cricket scores, football results, tennis rankings. Today in cricket: India won the Test match by 150 runs. Cricket fans celebrate! Also: movie reviews of the latest sports films.", links_to: [6, 9, 13] },
+      { page: 8, url: "ipl-central.in", text: "IPL cricket coverage. The Indian Premier League is the biggest cricket tournament in the world. Top cricket players from every country play in IPL cricket matches. Follow every cricket ball here.", links_to: [6, 7, 10] },
+      { page: 9, url: "movie-mania.com", text: "Latest movie news, trailers, and reviews. Watch the blockbuster movie of the year. This action movie broke all box-office records. Movie stars talk about their favourite pizza and cricket.", links_to: [10, 11, 7] },
+      { page: 10, url: "cinema-hub.net", text: "Cinema listings and movie times. Find a movie near you. This week's top movie is a romantic comedy. Book your movie tickets online. Every movie is better with popcorn.", links_to: [9, 12, 3] },
+      { page: 11, url: "film-critic.co", text: "In-depth movie reviews. A good movie tells a great story. The latest sci-fi movie had stunning visuals. Movie directors share their secrets. Is there a movie about cricket? Yes, there is!", links_to: [9, 10, 13] },
+      { page: 12, url: "study-hall.edu", text: "Exam preparation tips and tricks. Ace your exam with our study guides. Exam stress is real — learn to manage it. Our exam timetable tool helps you plan. Top students share their exam secrets.", links_to: [13, 4, 11] },
+      { page: 13, url: "college-life.net", text: "College life guide. Balance exam pressure with fun. Exam week survival kit: snacks, sleep, and study groups. After the exam season, watch a movie or play cricket with friends. Exam tips from senior students.", links_to: [12, 6, 9] },
+      { page: 14, url: "wiki-knowledge.org", text: "A free encyclopedia. Articles on pizza history, cricket rules, movie genres, and exam techniques. Knowledge is power. Learn about everything from pizza dough to quantum physics.", links_to: [1, 6, 9, 12] },
+      { page: 15, url: "news-today.com", text: "Breaking news. A new pizza restaurant opens downtown. The cricket team wins the World Cup. A movie about an exam student tops the charts. Today is a great day for pizza lovers and cricket fans alike.", links_to: [1, 6, 9, 12, 3] }
+    ];
+
+    // ══════════════════════════════════════════════════════════════════
+    // ② SURFER SCORES — calculated once when the page loads
+    // ══════════════════════════════════════════════════════════════════
+
+    const NUM_PAGES = PAGES.length;
+    const NUM_MOVES = 100_000;  // total surfer steps
+    const BOREDOM = 0.15;     // 15% chance of jumping to a random page
+
+    // Count how many pages link TO each page (used for "Links in: N")
+    const linksInCount = new Array(NUM_PAGES).fill(0);
+    PAGES.forEach(p => {
+      p.links_to.forEach(target => {
+        // links_to stores 1-based page numbers; convert to 0-based index
+        linksInCount[target - 1]++;
+      });
+    });
+
+    // surferScores[i] = fraction of time surfer spent on page i
+    let surferScores = [];
+
+    function runSurfer() {
+      // Count visits for each page (0-based index)
+      const visits = new Array(NUM_PAGES).fill(0);
+
+      // Start on a random page
+      let current = Math.floor(Math.random() * NUM_PAGES);
+
+      for (let move = 0; move < NUM_MOVES; move++) {
+        visits[current]++;  // count this visit
+
+        const links = PAGES[current].links_to;
+
+        if (Math.random() < BOREDOM || links.length === 0) {
+          // Bored: jump to any random page
+          current = Math.floor(Math.random() * NUM_PAGES);
+        } else {
+          // Click a random outgoing link
+          const picked = links[Math.floor(Math.random() * links.length)];
+          current = picked - 1;  // convert 1-based → 0-based
+        }
+      }
+
+      // Convert raw visit counts to fractions
+      surferScores = visits.map(v => v / NUM_MOVES);
+
+      // Update the HUD info label
+      document.getElementById('surferInfo').textContent =
+        `► SURFER REDEPLOYED — ${NUM_MOVES.toLocaleString()} MOVES COMPLETE. SCORES UPDATED.`;
+    }
+
+    // Run the surfer immediately when the page opens
+    runSurfer();
+
+    // ══════════════════════════════════════════════════════════════════
+    // ③ RANKING 1 — "Old Way (1997)": count whole-word occurrences
+    // ══════════════════════════════════════════════════════════════════
+
+    function countWord(text, word) {
+      // \b = word boundary; 'gi' = global + case-insensitive
+      const re = new RegExp('\\b' + word + '\\b', 'gi');
+      const matches = text.match(re);
+      return matches ? matches.length : 0;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // ④ HIGHLIGHT — wrap every match in a <mark> tag
+    // ══════════════════════════════════════════════════════════════════
+
+    function highlight(text, word) {
+      const re = new RegExp('(\\b' + word + '\\b)', 'gi');
+      // Escape HTML in the original text first, then highlight
+      const safe = text.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      return safe.replace(re, '<mark>$1</mark>');
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // ⑤ SEARCH — called when user clicks EXECUTE or presses Enter
+    // ══════════════════════════════════════════════════════════════════
+
+    function doSearch() {
+      const raw = document.getElementById('searchInput').value.trim();
+      const word = raw.toLowerCase();
+      const out = document.getElementById('results');
+
+      if (!word) {
+        out.innerHTML = `<div id="intro"><div class="big">⚠️</div>
+      <p>INVALID QUERY, SOLDIER.<br>ENTER A SEARCH TERM AND TRY AGAIN.</p></div>`;
+        return;
+      }
+
+      // Show toolbar
+      document.getElementById('toolbar').style.display = 'flex';
+
+      // Filter pages whose text contains the word (whole-word, case-insensitive)
+      const re = new RegExp('\\b' + word + '\\b', 'i');
+      const matching = PAGES.filter(p => re.test(p.text));
+
+      if (matching.length === 0) {
+        // Tactical no-results message
+        out.innerHTML = `
+      <div class="no-results">
+        <div class="emoji">💀</div>
+        <p>TARGET "<strong>${raw}</strong>" NOT FOUND IN DATABASE.<br>
+           INTEL SUGGESTS THIS WORD DOESN'T EXIST YET.<br>
+           THIS IS 1998 — REDEPLOY AND TRY AGAIN, SOLDIER.</p>
+      </div>`;
+        return;
+      }
+
+      // ── Build OLD-WAY ranked list ──
+      const oldRanked = matching
+        .map(p => ({ ...p, score: countWord(p.text, word) }))
+        .sort((a, b) => b.score - a.score);  // highest count first
+
+      // ── Build SURFER ranked list ──
+      const surferRanked = matching
+        .map(p => ({ ...p, score: surferScores[p.page - 1] }))
+        .sort((a, b) => b.score - a.score);  // highest surfer score first
+
+      // ── Render a single result card ──
+      function makeCard(p, rank, mode) {
+        const highlighted = highlight(p.text, word);
+        const scoreHTML = mode === 'old'
+          ? `<span class="card-score score-old">▲ HITS: ${p.score}</span>`
+          : `<span class="card-score score-surfer">⬡ SURFER: ${(p.score * 100).toFixed(1)}%</span>
+         <span class="card-score score-links">🔗 LINKS IN: ${linksInCount[p.page - 1]}</span>`;
+
+        return `
+      <div class="card">
+        <div class="card-rank">// TARGET ${rank}</div>
+        <div class="card-url">► ${p.url}</div>
+        <div class="card-text">${highlighted}</div>
+        ${scoreHTML}
+      </div>`;
+      }
+
+      // ── Build two-column HTML ──
+      const oldCards = oldRanked.map((p, i) => makeCard(p, i + 1, 'old')).join('');
+      const surferCards = surferRanked.map((p, i) => makeCard(p, i + 1, 'surfer')).join('');
+
+      out.innerHTML = `
+    <div class="results-grid">
+      <div class="col-old">
+        <div class="col-header">📖 OLD WAY (1997) — WORD COUNT</div>
+        <div class="cards-list">${oldCards}</div>
+      </div>
+      <div class="col-surfer">
+        <div class="col-header">🏄 SURFER WAY (1998) — PAGE RANK</div>
+        <div class="cards-list">${surferCards}</div>
+      </div>
+    </div>`;
+    }
+
+    // ── Quick-fill an example word and search ──
+    function quickSearch(word) {
+      document.getElementById('searchInput').value = word;
+      doSearch();
+    }
+
+    // ── Press Enter to search ──
+    document.getElementById('searchInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doSearch();
+    });
+  </script>
+</body>
+
+</html>
